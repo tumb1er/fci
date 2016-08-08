@@ -97,6 +97,7 @@ class Resource(TimeStampedModel):
         elif meta.pk:
                 meta.delete()
 
+
 class Directory(Resource):
     """ Directory model."""
 

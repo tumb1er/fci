@@ -1,4 +1,6 @@
 # coding: utf-8
+import json
+
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
@@ -121,7 +123,14 @@ class ResourceAPITestCase(APITestCase):
         """ Checks that root resource works correctly with API format."""
         response = self.client.get(self.url(), data={'format': 'api'})
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Resource List", response.content)
+        self.assertIn("Resource Instance", response.content)
+
+    def testRootAPITrailingSlash(self):
+        """ Checks redirect to root resource with trailing slash."""
+        response = self.client.get(self.url().rstrip('/'),
+                                   data={'format': 'api'})
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.url.replace('http://testserver', ''), self.url())
 
     def testValidation(self):
         """ Checks validation while creating resource."""
@@ -133,4 +142,52 @@ class ResourceAPITestCase(APITestCase):
             'parent': ["Parent must be a collection"],
             'metadata': ["This field is required."]
         })
+
+    def testMove(self):
+        """ Checks move resource to other parent."""
+        response = self.client.patch(self.url(self.file.path), data={
+            "parent": self.dir.id
+        })
+        self.assertEqual(response.status_code, 200)
+
+        self.file.refresh_from_db()
+        self.assertEqual(self.file.parent_id, self.dir.id)
+
+    def testMoveValidateCollection(self):
+        """ Checks that parent must be a collection on move."""
+        response = self.client.patch(self.url(self.dir.path), data={
+            "parent": self.file.id
+        })
+        self.assertEqual(response.status_code, 400)
+        error = 'Invalid pk "%s" - object does not exist.' % self.file.id
+        self.assertDictEqual(response.data, {'parent': [error]})
+
+    def testChangeResourceTypeForbidden(self):
+        """ Checks that is_collection flag can't be changed by PATCH request."""
+        response = self.client.patch(self.url(self.dir.path), data={
+            "is_collection": False
+        })
+        self.assertEqual(response.status_code, 400)
+        error = 'Resource type cannot be changed after creation'
+        self.assertDictEqual(response.data, {'is_collection': [error]})
+
+    def testChangeMetadata(self):
+        """ Checks metadata update via PATCH request."""
+        meta = {"new": "data"}
+        response = self.client.patch(self.url(self.dir.path), data={
+            'metadata': meta
+        }, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.dir.refresh_from_db()
+        self.assertDictEqual(self.dir.metadata, meta)
+
+    def testChangeMetadataViaJSONEncodedForm(self):
+        """ Checks that metadata can be passed as JSON string."""
+        meta = {"new": "data"}
+        response = self.client.patch(self.url(self.dir.path), data={
+            'metadata': json.dumps(meta)})
+        self.assertEqual(response.status_code, 200)
+        self.dir.refresh_from_db()
+        self.assertDictEqual(self.dir.metadata, meta)
+
 

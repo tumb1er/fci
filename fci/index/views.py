@@ -40,9 +40,9 @@ class ResourceView(viewsets.ModelViewSet):
             except models.File.DoesNotExist:
                 raise exceptions.NotFound()
         return resource
-
-    def list(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+    #
+    # def list(self, request, *args, **kwargs):
+    #     return self.retrieve(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
         resp = super(ResourceView, self).retrieve(request, *args, **kwargs)

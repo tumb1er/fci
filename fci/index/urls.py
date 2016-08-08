@@ -7,5 +7,4 @@ from fci.index import views
 router = DefaultRouter(trailing_slash=False)
 router.register('resources', views.ResourceView)
 
-
 urlpatterns = router.urls
