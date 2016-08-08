@@ -1,10 +1,8 @@
 # coding: utf-8
 import json
 
-from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import empty
 from rest_framework.reverse import reverse
 
 from fci.index import models
@@ -58,36 +56,6 @@ class PlainResourceSerializer(serializers.ModelSerializer):
 
     def validate_metadata(self, value):
         return json.loads(value)
-    #
-    # def create(self, validated_data):
-    #     obj = super(PlainResourceSerializer, self).create(validated_data)
-    #     if validated_data:
-    #         id = obj.pk
-    #         ct = ContentType.objects.get_for_model(obj)
-    #         models.Metadata.objects.create(object_id=id, content_type=ct,
-    #                                        data=validated_data['metadata'])
-    #     return obj
-    #
-    # def update(self, instance, validated_data):
-    #     obj = super(PlainResourceSerializer, self).update(
-    #         instance, validated_data)
-    #     ct = ContentType.objects.get_for_model(obj)
-    #     try:
-    #         meta = models.Metadata.objects.get(object_id=obj.pk, content_type=ct)
-    #     except models.Metadata.DoesNotExist:
-    #         meta = None
-    #
-    #     if validated_data:
-    #         if meta:
-    #             meta.data = validated_data['metadata']
-    #             meta.save()
-    #         else:
-    #             models.Metadata.objects.create(object_id=id, content_type=ct,
-    #                                            data=validated_data['metadata'])
-    #     else:
-    #         if meta:
-    #             meta.delete()
-    #     return obj
 
 
 class DirectorySerializer(PlainResourceSerializer):
