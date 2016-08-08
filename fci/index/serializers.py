@@ -1,6 +1,7 @@
 # coding: utf-8
 import json
 
+import six
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse
@@ -55,7 +56,9 @@ class PlainResourceSerializer(serializers.ModelSerializer):
         return value
 
     def validate_metadata(self, value):
-        return json.loads(value)
+        if isinstance(value, six.text_type):
+            return json.loads(value)
+        return value
 
 
 class DirectorySerializer(PlainResourceSerializer):

@@ -11,10 +11,10 @@ class ResourceView(viewsets.ModelViewSet):
     queryset = models.Resource.objects.all()
     lookup_field = 'path'
     lookup_value_regex = '.*'
-
-    def get_queryset(self):
-        resource = self.get_object()
-        return type(resource).objects.get_queryset()
+    #
+    # def get_queryset(self):
+    #     resource = self.get_object()
+    #     return type(resource).objects.get_queryset()
 
     def get_object(self):
         path = self.kwargs.get('path') or None
@@ -66,5 +66,5 @@ class ResourceView(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         resp = Response(serializer.data, status=status.HTTP_201_CREATED,
-                            headers=headers)
+                        headers=headers)
         return resp
