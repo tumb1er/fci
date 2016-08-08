@@ -49,7 +49,7 @@ class Resource(TimeStampedModel):
 
     def clean_parent(self):
         errors = defaultdict(list)
-        if not self.parent.is_collection:
+        if self.parent and not self.parent.is_collection:
             errors['parent'].append('Parent must be a collection')
         if not self.pk:
             return errors

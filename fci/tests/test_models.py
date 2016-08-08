@@ -29,6 +29,10 @@ class ResourceModelTestCase(ResourceTestCaseBase):
             {'parent': ["Resource is a parent of itself"]},
             e.exception.message_dict)
 
+    def testCleanRootResource(self):
+        """ Checks root resource clean."""
+        self.root.clean()
+
     def testResourceCircularReferenceDirect(self):
         """ Checks Directory can't become a direct parent of itself."""
         a = models.Resource.objects.create(parent=self.root, name='a',
@@ -91,6 +95,14 @@ class DirectoryModelTestCase(ResourceTestCaseBase):
         d.refresh_from_db()
         self.assertTrue(d.is_collection)
 
+    def testSaveUpdateFields(self):
+        """ Checks that update_fields are handled correctly while saving dir."""
+        d = models.Directory.objects.create(name='aaa', parent=self.root)
+        d.is_collection = False
+        d.save(update_fields=['name'])
+        d.refresh_from_db()
+        self.assertTrue(d.is_collection)
+
 
 class FileModelTestCase(ResourceTestCaseBase):
 
@@ -101,6 +113,16 @@ class FileModelTestCase(ResourceTestCaseBase):
         d.save()
         d.refresh_from_db()
         self.assertFalse(d.is_collection)
+
+    def testSaveUpdateFields(self):
+        """
+        Checks that update_fields are handled correctly while saving file.
+        """
+        f = models.File.objects.create(name='aaa', parent=self.root)
+        f.is_collection = True
+        f.save(update_fields=['name'])
+        f.refresh_from_db()
+        self.assertFalse(f.is_collection)
 
 
 class MetadataModelTestCase(ResourceModelTestCase):
@@ -141,6 +163,14 @@ class MetadataModelTestCase(ResourceModelTestCase):
         data = {'a': 'b'}
         self.root.metadata = data
         self.root.save()
+        self.root.metadata = {}
+        self.root.save()
+        self.assertEqual(models.Metadata.objects.count(), 0)
+
+    def testMetadataDeleteWhileNotPresent(self):
+        """
+        Checks correct handling of metadata cleanup while not yet present.
+        """
         self.root.metadata = {}
         self.root.save()
         self.assertEqual(models.Metadata.objects.count(), 0)
