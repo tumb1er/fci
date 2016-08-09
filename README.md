@@ -2,6 +2,8 @@ File Collection Index
 =====================
 
 [![Build Status](https://travis-ci.org/tumb1er/fci.svg?branch=master)](https://travis-ci.org/tumb1er/fci)
+[![codecov](https://codecov.io/gh/tumb1er/fci/branch/master/graph/badge.svg)](https://codecov.io/gh/tumb1er/fci)
+
 
 **FCI** is Django application for file organization. It does not provide
 any storage facilities or file content management. It only stores
