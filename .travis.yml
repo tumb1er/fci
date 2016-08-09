@@ -7,6 +7,6 @@ install:
   - pip install -r requirements.txt
   - pip install codecov
 # command to run tests
-script: python -m coverage run manage.py test
+script: python -m coverage run manage.py test --omit='manage.py'
 # report coverage
 after_success: codecov
