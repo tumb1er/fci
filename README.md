@@ -13,8 +13,7 @@ Usage
 FCI can be used as standalone application or as a part of django 
 project.
 
-Standalone application example is installed as `fci.standalone` package.
-It only provides basic Django project structure to play with.
+`standalone` provides basic Django project structure to play with.
 
 To use FCI in Django-project the only thing you need is:
 
@@ -51,7 +50,59 @@ HTTP/1.1 201 Created
     "created": "2016-08-08T02:04:45.347865Z",
     "modified": "2016-08-08T02:04:45.348723Z",
     "name": "new_dir",
-    "metadata": "{}",
+    "metadata": {},
     "parent": 1
+}
+```
+
+### Create file
+```
+POST /fci/resources/parent/
+Content-Type: application/json
+
+{
+  "is_collection": true,
+  "name": "file.jpg",
+  "metadata": {
+    "mime-type": "image/jpeg"
+  }
+}
+
+HTTP/1.1 201 Created
+
+{
+    "id": 3,
+    "is_collection": false,
+    "url": "/fci/resources/parent/file.txt",
+    "created": "2016-08-08T02:05:34.234343Z",
+    "modified": "2016-08-08T02:05:34.234343Z",
+    "name": "file.txt",
+    "metadata": {
+        "mime-type": "image/jpeg"
+     },
+    "parent": 1
+}
+```
+
+### Move/rename resource
+
+```
+PATCH /fci/resources/parent/file.txt
+
+parent=2&name=new_file.txt
+
+HTTP/1.1 200 OK
+
+{
+    "id": 3,
+    "is_collection": false,
+    "url": "/fci/resources/parent/dir/new_dir/new_file.txt",
+    "created": "2016-08-08T02:05:34.234343Z",
+    "modified": "2016-08-08T02:06:40.731572Z",
+    "name": "new_file.txt",
+    "metadata": {
+        "mime-type": "image/jpeg"
+     },
+    "parent": 2
 }
 ```
