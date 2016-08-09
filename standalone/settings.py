@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'fci.standalone.urls'
+ROOT_URLCONF = 'standalone.urls'
 
 TEMPLATES = [
     {
@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'fci.standalone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.abspath(os.path.join(BASE_DIR, '..', 'db.sqlite3')),
     }
 }
 

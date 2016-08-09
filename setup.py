@@ -5,8 +5,8 @@ setup(
     version='0.0.1',
     packages=['fci',
               'fci.index',
-              'fci.index.migrations',
-              'fci.standalone'],
+              'fci.index.migrations'
+              ],
     url='https://github.com/tumb1er/fci',
     license='Beer License',
     author='Sergey Tikhonov',

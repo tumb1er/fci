@@ -77,8 +77,10 @@ class Resource(TimeStampedModel):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        super(Resource, self).save(force_insert, force_update, using,
-                                   update_fields)
+        super(Resource, self).save(force_insert=force_insert,
+                                   force_update=force_update,
+                                   using=using,
+                                   update_fields=update_fields)
         if hasattr(self, '_metadata'):
             self.save_metadata()
 
@@ -95,7 +97,7 @@ class Resource(TimeStampedModel):
             meta.data = data
             meta.save()
         elif meta.pk:
-                meta.delete()
+            meta.delete()
 
 
 class Directory(Resource):
@@ -106,8 +108,10 @@ class Directory(Resource):
         if not update_fields or 'is_collection' in update_fields:
             # Directory.is_collection is ALWAYS True
             self.is_collection = True
-        super(Directory, self).save(force_insert, force_update, using,
-                                    update_fields)
+        super(Directory, self).save(force_insert=force_insert,
+                                    force_update=force_update,
+                                    using=using,
+                                    update_fields=update_fields)
 
 
 class File(Resource):
@@ -119,12 +123,14 @@ class File(Resource):
         if not update_fields or 'is_collection' in update_fields:
             # File.is_collection is ALWAYS False
             self.is_collection = False
-        super(File, self).save(force_insert, force_update, using,
-                               update_fields)
+        super(File, self).save(force_insert=force_insert,
+                               force_update=force_update,
+                               using=using,
+                               update_fields=update_fields)
 
 
 class Metadata(models.Model):
     resource = GenericForeignKey()
     object_id = models.IntegerField()
-    content_type = models.ForeignKey('contenttypes.ContentType')
+    content_type = models.ForeignKey(ContentType)
     data = JSONField()

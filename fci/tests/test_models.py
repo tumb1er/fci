@@ -1,8 +1,8 @@
 # coding: utf-8
+import mock
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-import mock
 
 from fci.index import models
 
