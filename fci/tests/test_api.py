@@ -123,7 +123,7 @@ class ResourceAPITestCase(APITestCase):
         """ Checks that root resource works correctly with API format."""
         response = self.client.get(self.url(), data={'format': 'api'})
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Resource Instance", response.content)
+        self.assertIn("Resource Instance", response.content.decode('utf-8'))
 
     def testRootAPITrailingSlash(self):
         """ Checks redirect to root resource with trailing slash."""
